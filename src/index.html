@@ -2,36 +2,66 @@
 <html>
   <head>
     <meta charset='utf-8' />
-    <title>Viz Starter</title>
+    <title>COVID-19 Appeals and Plans</title>
     <meta name='viewport' content='initial-scale=1,maximum-scale=1,user-scalable=no' />
     <link rel='icon' type='image/png' href='https://data.humdata.org/images/icons/hdx.ico' />
     <link href="https://fonts.googleapis.com/css?family=Source+Sans+Pro&display=swap" rel="stylesheet">
+    <link href="https://cdn.datatables.net/1.10.20/css/jquery.dataTables.min.css" rel="stylesheet" type="text/css">
     <link href='css/styles.css' rel='stylesheet' />
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
+    <script src="https://d3js.org/d3.v5.js"></script>
+    <script src="https://momentjs.com/downloads/moment.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/d3-tip/0.9.1/d3-tip.min.js"></script>
+    <script src="https://cdn.datatables.net/1.10.16/js/jquery.dataTables.min.js"></script>
   </head>
 
   <body>
 
+    <div class='loader'>
+      <div class="sp sp-circle"></div>
+      Loading data...
+    </div>
+
     <main>
-      <div class='grid-container'>
-        <div class='col-12'>
-          <h1>Viz Starter</h1>
-          <p>Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo. Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit, sed quia consequuntur magni dolores eos qui ratione voluptatem sequi nesciunt.</p>
-        </div>
+      <header>
+        <h1>COVID-19 Appeals and Plans</h1>
+      </header>
+
+      <div class="filter-container">
+        <label for="filterSelect">Order by:</label>
+        <select id="filterSelect" class="filter-select">
+          <option value="Organisation">Organisation A-Z</option>
+          <option value="Duration (days)">Appeal Duration</option>
+          <option value="Revised Requirement">Revised Requirement $</option>
+          <option value="Original Requirement">Original Requirement $</option>
+        </select>
       </div>
+
+      <div id="timeline"></div>
+      <table id="appealsTable">
+        <thead>
+          <tr>
+            <th>Start Date</th>
+            <th>End Date</th>
+            <th>Duration (days)</th>
+            <th>Org Name</th>
+            <th>Appeal Name</th>
+            <th>Original Requirement</th>
+            <th>Revised Requirement</th>
+            <th>Notes</th>
+          </tr>
+        </thead>
+      </table>
     </main>
 
     <footer>
       <div class='logos'>
-        <div class='grid-container'>
-          <div class='col-12'>
-            <a href='https://www.unocha.org' target='_blank'>
-              <img height='30' src='assets/logo-ocha-gray.png'>
-            </a>
-            <a href='https://centre.humdata.org' target='_blank'>
-              <img height='38' src='assets/logo-centre-gray.png'>
-            </a>
-          </div>
-        </div>
+        <a href='https://www.unocha.org' target='_blank'>
+          <img height='30' src='assets/logo-ocha-gray.png'>
+        </a>
+        <a href='https://centre.humdata.org' target='_blank'>
+          <img height='38' src='assets/logo-centre-gray.png'>
+        </a>
       </div>
     </footer>
 
