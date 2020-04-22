@@ -13,6 +13,8 @@
     <script src="https://momentjs.com/downloads/moment.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/d3-tip/0.9.1/d3-tip.min.js"></script>
     <script src="https://cdn.datatables.net/1.10.16/js/jquery.dataTables.min.js"></script>
+    <script src="https://bartaz.github.io/sandbox.js/jquery.highlight.js"></script>
+    <script src="https://cdn.datatables.net/plug-ins/1.10.20/features/searchHighlight/dataTables.searchHighlight.min.js"></script>
   </head>
 
   <body>
@@ -30,10 +32,10 @@
       <div class="filter-container">
         <label for="filterSelect">Order by:</label>
         <select id="filterSelect" class="filter-select">
-          <option value="Organisation">Organisation A-Z</option>
           <option value="Duration (days)">Appeal Duration</option>
-          <option value="Revised Requirement">Revised Requirement $</option>
           <option value="Original Requirement">Original Requirement $</option>
+          <option value="Overall Requirement">Revised Requirement $</option>
+          <option value="Organisation">Organisation A-Z</option>
         </select>
       </div>
 

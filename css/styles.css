@@ -1208,6 +1208,12 @@ h3 {
 .today-line {
   stroke: #F2645A; }
 
+.today-label {
+  fill: #F2645A;
+  font-family: 'Gotham-Bold';
+  font-size: 10px;
+  text-transform: uppercase; }
+
 .num {
   display: block;
   font-family: 'Gotham-Bold';
@@ -1228,7 +1234,7 @@ h3 {
   position: relative; }
 
 .timeline-legend {
-  bottom: 30px;
+  bottom: 40px;
   line-height: 16px;
   padding: 5px 10px 0 0;
   position: absolute;
@@ -1287,6 +1293,12 @@ table.dataTable {
     vertical-align: top; }
   table.dataTable.no-footer {
     border-color: #CCC; }
+  table.dataTable span.highlight {
+    background-color: #FFFF88;
+    border-radius: 0.28571429rem; }
+  table.dataTable span.column_highlight {
+    background-color: #ffcc99;
+    border-radius: 0.28571429rem; }
 
 @media only screen and (max-width: 767px) {
   .logos .grid-container > div {
