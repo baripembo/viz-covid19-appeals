@@ -55,6 +55,7 @@ function getDuration(start, end) {
 function getEndDate(startDate, duration) {
     var endDate = new Date(startDate);
     endDate.setDate(endDate.getDate() + duration);
+    console.log(startDate, duration, endDate)
     return endDate;
 }
 
@@ -90,7 +91,7 @@ $( document ).ready(function() {
           d['Start Date'] = (start.isValid()) ? new Date(start.year(), start.month(), start.date()) : today;
 
           //if end date is invalid, calculate it by duration
-          d['Duration (days)'] = (d['Duration (days)'] == '') ? 0 : d['Duration (days)'];
+          d['Duration (days)'] = (d['Duration (days)'] == '') ? 0 : +d['Duration (days)'];
           d['End Date'] = (end.isValid()) ? new Date(end.year(), end.month(), end.date()) : getEndDate(d['Start Date'], d['Duration (days)']);
 
           //cut off bars with end dates past the timeline span
