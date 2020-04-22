@@ -10,7 +10,6 @@ $( document ).ready(function() {
   var timelineEndDate = new Date(2021, 3, 1);
   var today = new Date();
   var dateFormat = d3.timeFormat("%d-%m-%Y");
-  var bars;
 
   function getData() {
     Promise.all([
@@ -19,25 +18,28 @@ $( document ).ready(function() {
       //parse data
       //only display plans at global level for now
       data[0].forEach(function(d) {
-        if (d['Level'] == 'Global' && d['Original Requirement']!=='') {
+        if (d['Level'] == 'Global' && d['Organisation'] !== '') {
           //format start and end dates
           var start = moment(d['Start Date'], ['DD-MMM-YYYY','MM/DD/YYYY']);
           var end = moment(d['End Date'], ['DD-MMM-YYYY','MM/DD/YYYY']);
 
-          //if date is invalid, set it to today
+          //if start date is invalid, set it to today
           d['Start Date'] = (start.isValid()) ? new Date(start.year(), start.month(), start.date()) : today;
-          d['End Date'] = (end.isValid()) ? new Date(end.year(), end.month(), end.date()) : today;
 
-          //mark invalid end dates and end dates past the timeline span
-          d['capped'] = (d['End Date'].getTime() > timelineEndDate.getTime() || d['End Date'].getTime() == today.getTime()) ? true : false;
+          //if end date is invalid, calculate it by duration
+          var dur = (d['Duration (days)'] !== '') ? d['Duration (days)'] : 0;
+          d['End Date'] = (end.isValid()) ? new Date(end.year(), end.month(), end.date()) : getEndDate(d['Start Date'], dur);
+
+          //cut off bars with end dates past the timeline span
+          d['capped'] = (d['End Date'].getTime() > timelineEndDate.getTime()) ? true : false;
           d['End Date'] = (d['End Date'].getTime() > timelineEndDate.getTime()) ? timelineEndDate : d['End Date'];
-          
-          d['Duration (day)'] = +d['Duration (day)'];
+
+          d['Overall Requirement'] = (d['Revised Requirement'] !== '') ? +d['Revised Requirement'] : d['Original Requirement'];
           timelineData.push(d);
         }
       });
 
-      timelineData.sort(propComparator('Organisation'));
+      timelineData.sort(propComparator('Duration (days)'));
       init();
     });
   }
@@ -54,17 +56,21 @@ $( document ).ready(function() {
 
   function onFilterSelect() {
     var filterMode = $('.filter-select').val();
-
     timelineData.sort(propComparator(filterMode));
     sortTimeline(filterMode);
   }
 
-  var x, y;
+
+  // ********** //
+  //  TIMELINE  //
+  // ********** //
+  var bars, x, y;
   function createTimeline() {
     createLegend();
 
     var barHeight = 40;
     var barPadding = 12;
+    var bottomOffset = 40;
     var margin = {top: 30, right: 30, bottom: 80, left: 0},
         width = viewportWidth - margin.left - margin.right,
         height = (barHeight + barPadding) * timelineData.length;
@@ -99,9 +105,9 @@ $( document ).ready(function() {
     // add x gridlines
     svg.append("g")     
       .attr("class", "grid")
-      .attr("transform", "translate(0," + (height + margin.bottom - 26) + ")")
+      .attr("transform", "translate(0," + (height + margin.bottom - bottomOffset) + ")")
       .call(d3.axisBottom(x)
-        .tickSize(-(height + margin.bottom - 26))
+        .tickSize(-(height + margin.bottom - bottomOffset))
         .tickFormat("")
       )
 
@@ -117,20 +123,29 @@ $( document ).ready(function() {
       )
 
     // add line marker for today
-    var todayLine = svg.append("line")
-      .attr('class', 'today-line')
-      .attr("x1", function(d) { return x(today); })
-      .attr("y1", 0)
-      .attr("x2", function(d) { return x(today); })
-      .attr("y2", height + margin.bottom);
+    var todayLine = svg.append("g")
+      .attr("transform", function(d, i) { return "translate(" + x(today) + ", 0)"; });
 
-    svg.append("svg:image")
+    todayLine.append("line")
+      .attr('class', 'today-line')
+      .attr("x1", 0)
+      .attr("y1", 0)
+      .attr("x2", 0)
+      .attr("y2", height + margin.bottom - bottomOffset);
+
+    todayLine.append("svg:image")
       .attr("class", "today-marker")
-      .attr("x", function(d) { return x(today) - 7.5; })
-      .attr("y", height + margin.bottom - 26)    
       .attr("xlink:href", "assets/timeline_pointer@2x.png")
+      .attr("x", -7.5)
+      .attr("y", height + margin.bottom - bottomOffset)    
       .attr("width", "15")
       .attr("height", "26");
+
+    todayLine.append("text")
+      .attr("class", "today-label")
+      .attr("x", -18)
+      .attr("y", height + margin.bottom)
+      .text("Today");
 
     // append bars
     bars = svg.selectAll('.bar')
@@ -202,7 +217,6 @@ $( document ).ready(function() {
   function createLegend() {
     var arr = []
     for (let [key, value] of Object.entries(categoryColors)) {
-      console.log(`${key}: ${value}`);
       arr.push(key)
     }
 
@@ -217,7 +231,6 @@ $( document ).ready(function() {
         return '<span></span>'+id;
       })
       .each(function(id) {
-        console.log(id)
         d3.select(this).select('span').style('background-color', categoryColors[id]);
       });
   }
@@ -231,6 +244,9 @@ $( document ).ready(function() {
   }
 
 
+  // ********** //
+  // DATA TABLE //
+  // ********** //
   function createTable() {
     var dataArray = [];
     timelineData.forEach(function(item, i) {
@@ -243,19 +259,34 @@ $( document ).ready(function() {
         item['Appeal Name'],
         getNum(item['Original Requirement']),
         revisedNum,
-        item['Comment']
+        item['Comment'],
+        item['Link']
       ];
       dataArray.push(itemArray);
     });
   
     $('#appealsTable').DataTable({
         data: dataArray,
+        searchHighlight: true,
         stripeClasses: [ 'odd-row', 'even-row' ],
         columnDefs: [
+          {
+            "targets": 8,
+            "visible": false,
+            "searchable": false
+          },
           { 
             width: "20%", 
             targets: [4, 7] 
           },
+          { 
+            targets: 4,
+            render: function ( data, type, row ) {
+              var link = row[row.length-1];
+              var d = (link !== '') ? '<a href="'+ link +'" target="_blank">' + data + '</a>' : data;
+              return d;
+            }
+          }
           // { 
           //   targets: 7,
           //   render: function ( data, type, row ) {

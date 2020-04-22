@@ -50,6 +50,12 @@ function getDuration(start, end) {
     return Math.round(days);
 }
 
+function getEndDate(startDate, duration) {
+    var endDate = new Date(startDate);
+    endDate.setDate(endDate.getDate() + duration);
+    return endDate;
+}
+
 function getNum(num) {
     return d3.format('$.2s')(num).replace(/G/, 'B');
 }

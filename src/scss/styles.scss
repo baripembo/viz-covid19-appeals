@@ -121,6 +121,13 @@ h3 {
 	stroke: #F2645A;
 }
 
+.today-label {
+	fill: #F2645A;
+	font-family: 'Gotham-Bold';
+	font-size: 10px;
+	text-transform: uppercase;
+}
+
 .num {
 	display: block;
 	font-family: 'Gotham-Bold';
@@ -146,8 +153,7 @@ h3 {
 }
 
 .timeline-legend {
-  //background-color: rgba(255, 255, 255, 0.5);
-  bottom: 30px;
+  bottom: 40px;
   line-height: 16px;
   padding: 5px 10px 0 0;
   position: absolute;
@@ -224,6 +230,14 @@ table.dataTable {
   &.no-footer {
   	border-color: #CCC;
   }
+  span.highlight {
+	  background-color: #FFFF88;
+	  border-radius: 0.28571429rem;
+	}
+	span.column_highlight {
+	  background-color: #ffcc99;
+	  border-radius: 0.28571429rem;
+	}
 }
 
 
