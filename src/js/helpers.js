@@ -53,6 +53,7 @@ function getDuration(start, end) {
 function getEndDate(startDate, duration) {
     var endDate = new Date(startDate);
     endDate.setDate(endDate.getDate() + duration);
+    console.log(startDate, duration, endDate)
     return endDate;
 }
 
