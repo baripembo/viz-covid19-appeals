@@ -90,8 +90,8 @@ $( document ).ready(function() {
           d['Start Date'] = (start.isValid()) ? new Date(start.year(), start.month(), start.date()) : today;
 
           //if end date is invalid, calculate it by duration
-          var dur = (d['Duration (days)'] !== '') ? d['Duration (days)'] : 0;
-          d['End Date'] = (end.isValid()) ? new Date(end.year(), end.month(), end.date()) : getEndDate(d['Start Date'], dur);
+          d['Duration (days)'] = (d['Duration (days)'] == '') ? 0 : d['Duration (days)'];
+          d['End Date'] = (end.isValid()) ? new Date(end.year(), end.month(), end.date()) : getEndDate(d['Start Date'], d['Duration (days)']);
 
           //cut off bars with end dates past the timeline span
           d['capped'] = (d['End Date'].getTime() > timelineEndDate.getTime()) ? true : false;
@@ -157,7 +157,7 @@ $( document ).ready(function() {
       .offset([0, 0])
       .html(function(d) { 
         var content ='<h3>'+ d['Appeal Name'] +'</h3>';
-        content += (d['Duration (days)'] !== '') ? 'Duration: '+ d['Duration (days)'] +' Days <hr>' : '<hr>';// getDuration(d['Start Date'], d['End Date'])
+        content += 'Duration: '+ d['Duration (days)'] +' Days <hr>';
         content += '<div class="req-container"><div class="req">Original Requirement: <span class="num">'+ getNum(d['Original Requirement']) +'</span>('+ dateFormat(d['Start Date']) +')</div>';
         if (d['Revised Requirement']!=='') content += '<div class="req">Revised Requirement: <span class="num">'+ getNum(d['Revised Requirement']) +'</span>';
         content += (d['Revision Date']!=='') ? '('+ dateFormat(d['Revision Date']) +')</div>' : '</div>'; 
