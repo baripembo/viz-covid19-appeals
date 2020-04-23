@@ -146,11 +146,11 @@ $( document ).ready(function() {
     y = d3.scaleBand().range([height, 30]);
     y.domain(timelineData.map(function(d) { return d['Appeal Name']; }));
               
-    var svg = d3.select("#timeline").append("svg")
-        .attr("width", width)
-        .attr("height", height + margin.top + margin.bottom)
-      .append("g")
-        .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+    var svg = d3.select('#timeline').append('svg')
+        .attr('width', width)
+        .attr('height', height + margin.top + margin.bottom)
+      .append('g')
+        .attr('transform', 'translate(' + margin.left + ',' + margin.top + ')');
 
     var tip = d3.tip()
       .attr('class', 'd3-tip')
@@ -166,75 +166,77 @@ $( document ).ready(function() {
       });
 
     // add x gridlines
-    svg.append("g")     
-      .attr("class", "grid")
-      .attr("transform", "translate(0," + (height + margin.bottom - bottomOffset) + ")")
+    svg.append('g')     
+      .attr('class', 'grid')
+      .attr('transform', 'translate(0,' + (height + margin.bottom - bottomOffset) + ')')
       .call(d3.axisBottom(x)
         .tickSize(-(height + margin.bottom - bottomOffset))
-        .tickFormat("")
+        .tickFormat('')
       )
 
     // add the x axis
-    svg.append("g")
-      .attr("transform", "translate(0, 0)")
+    svg.append('g')
+      .attr('transform', 'translate(0, 0)')
       .call(d3.axisBottom(x)
         .tickFormat(function(d) {
-          var yearFormat = d3.timeFormat("%b %Y");
-          var monthFormat = d3.timeFormat("%b");
+          var yearFormat = d3.timeFormat('%b %Y');
+          var monthFormat = d3.timeFormat('%b');
           return (d.getMonth()==0) ? yearFormat(d) : monthFormat(d);
         })
       )
 
     // add line marker for today
-    var todayLine = svg.append("g")
-      .attr("transform", function(d, i) { return "translate(" + x(today) + ", 0)"; });
+    var todayLine = svg.append('g')
+      .attr('transform', function(d, i) { return 'translate(' + x(today) + ', 0)'; });
 
-    todayLine.append("line")
+    todayLine.append('line')
       .attr('class', 'today-line')
-      .attr("x1", 0)
-      .attr("y1", 0)
-      .attr("x2", 0)
-      .attr("y2", height + margin.bottom - bottomOffset);
+      .attr('x1', 0)
+      .attr('y1', 0)
+      .attr('x2', 0)
+      .attr('y2', height + margin.bottom - bottomOffset);
 
-    todayLine.append("svg:image")
-      .attr("class", "today-marker")
-      .attr("xlink:href", "assets/timeline_pointer@2x.png")
-      .attr("x", -7.5)
-      .attr("y", height + margin.bottom - bottomOffset)    
-      .attr("width", "15")
-      .attr("height", "26");
+    todayLine.append('svg:image')
+      .attr('class', 'today-marker')
+      .attr('xlink:href', 'assets/timeline_pointer@2x.png')
+      .attr('x', -7.5)
+      .attr('y', height + margin.bottom - bottomOffset)    
+      .attr('width', '15')
+      .attr('height', '26');
 
-    todayLine.append("text")
-      .attr("class", "today-label")
-      .attr("x", -18)
-      .attr("y", height + margin.bottom)
-      .text("Today");
+    todayLine.append('text')
+      .attr('class', 'today-label')
+      .attr('x', -18)
+      .attr('y', height + margin.bottom)
+      .text('Today');
 
     // append bars
     bars = svg.selectAll('.bar')
         .data(timelineData)
       .enter().append('g')
         .attr('class', 'bar-container')
-        .attr("transform", function(d, i) { return "translate(" + x(d['Start Date']) + ", " + y(d['Appeal Name']) + ")"; });
+        .attr('transform', function(d, i) { return 'translate(' + x(d['Start Date']) + ', ' + y(d['Appeal Name']) + ')'; });
 
-    bars.append("rect")
-      .attr("class", "bar")
-      .attr("fill", function(d) {
+    bars.append('rect')
+      .attr('class', 'bar')
+      .attr('fill', function(d) {
         return categoryColors[d['Appeal Type']];
       })
       .attr('opacity', function(d) {
         var o = (d['End Date'].getTime() < today.getTime()) ? 0.5 : 1;
         return o;
       })
-      .attr("height", barHeight)
-      .attr("width", function(d) {
+      .attr('rx', 20)
+      .attr('ry', 20)
+      .attr('height', barHeight)
+      .attr('width', function(d) {
         var w = x(d['End Date']) - x(d['Start Date']);
         return w;
       });
 
     //bar caps for appeals with no end date or end date past the timeline
     bars.append('rect')
-      .attr("fill", function(d) {
+      .attr('fill', function(d) {
         return categoryColors[d['Appeal Type']];
       })
       .attr("x", function(d) {
@@ -245,18 +247,18 @@ $( document ).ready(function() {
         var w = (d.capped) ? 20 : 0;
         return w;
       })
-      .attr("height", barHeight);
+      .attr('height', barHeight);
 
     // add org logo
-    bars.append("svg:image")
-      .attr("class", "org-logo")
-      .attr("x", 6)
-      .attr("y", 5)    
-      .attr("xlink:href", function(d) {
-        return "assets/logos/" + d['Organisation'].replace(' ', '') + ".png"
+    bars.append('svg:image')
+      .attr('class', 'org-logo')
+      .attr('x', 6)
+      .attr('y', 5)    
+      .attr('xlink:href', function(d) {
+        return 'assets/logos/' + d['Organisation'].replace(' ', '') + '.png'
       })
-      .attr("width", "29")
-      .attr("height", "29");
+      .attr('width', '29')
+      .attr('height', '29');
 
     //replace missing logo with generic logo
     $('.org-logo').on('error', function(){
@@ -264,10 +266,10 @@ $( document ).ready(function() {
     });
 
     // add org names
-    bars.append("text")
-      .attr("class", "org-label")
-      .attr("x", 40)
-      .attr("y", function(d) { return barHeight/2 + 4; })
+    bars.append('text')
+      .attr('class', 'org-label')
+      .attr('x', 40)
+      .attr('y', function(d) { return barHeight/2 + 4; })
       .text(function (d) {
         return d['Organisation'];
       });

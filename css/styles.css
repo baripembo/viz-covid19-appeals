@@ -1180,9 +1180,6 @@ h3 {
 .bar-container {
   cursor: pointer; }
 
-.bar {
-  rx: 20px; }
-
 .tick line {
   stroke-width: 0; }
 
