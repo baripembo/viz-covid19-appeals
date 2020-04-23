@@ -55,7 +55,6 @@ function getDuration(start, end) {
 function getEndDate(startDate, duration) {
     var endDate = new Date(startDate);
     endDate.setDate(endDate.getDate() + duration);
-    console.log(startDate, duration, endDate)
     return endDate;
 }
 
@@ -82,7 +81,7 @@ $( document ).ready(function() {
       //parse data
       //only display plans at global level for now
       data[0].forEach(function(d) {
-        if (d['Level'] == 'Global' && d['Organisation'] !== '') {
+        if (d['Level'] == 'Global' && d['Start Date'] !== '' && d['Original Requirement'] !== '') {
           //format start and end dates
           var start = moment(d['Start Date'], ['DD-MMM-YYYY','MM/DD/YYYY']);
           var end = moment(d['End Date'], ['DD-MMM-YYYY','MM/DD/YYYY']);
