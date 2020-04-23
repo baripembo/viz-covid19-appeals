@@ -165,6 +165,9 @@ $( document ).ready(function() {
         return content; 
       });
 
+    // hide tooltip when scrolling timeline on mobile
+    if (isMobile) $('#timeline').scroll(tip.hide);
+
     // add x gridlines
     svg.append('g')     
       .attr('class', 'grid')
