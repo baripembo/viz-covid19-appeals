@@ -63,12 +63,12 @@ function getNum(num) {
 }
 $( document ).ready(function() {
   const DATA_URL = 'data/';
-  var isMobile = $(window).width()<600? true : false;
+  var isMobile = $(window).width()<768? true : false;
   var timelinePath = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vSQLlaJ4qXfuVIpcPI1kPxpbrOY4xsVrSPUGxmIj9G_dgUZJTSPZUMi-8i9rB6t_vfVOBVIjaM25T0S/pub?gid=0&single=true&output=csv';
   var timelineData = [];
 
-  var viewportWidth = $('main').innerWidth();
-  var categoryColors = {'Humanitarian Response': '#007CE1', 'Health Response': '#1EBFB3', 'Socio-economic Framework': '#F2645A'};
+  var viewportWidth = (isMobile) ? 1000 : $('main').innerWidth();
+  var categoryColors = {'Humanitarian Response': '#007CE1', 'Health Response': '#1EBFB3', 'Socio-economic Framework': '#9C27B0'};
   var timelineStartDate = new Date(2020, 0, 1);
   var timelineEndDate = new Date(2021, 3, 1);
   var today = new Date();
@@ -143,7 +143,7 @@ $( document ).ready(function() {
       .range([40, width - margin.left - margin.right]);
 
     // set the ranges
-    y = d3.scaleBand().range([height, 30]);
+    y = d3.scaleBand().range([height, 20]);
     y.domain(timelineData.map(function(d) { return d['Appeal Name']; }));
               
     var svg = d3.select('#timeline').append('svg')
@@ -334,7 +334,15 @@ $( document ).ready(function() {
         data: dataArray,
         searchHighlight: true,
         stripeClasses: [ 'odd-row', 'even-row' ],
+        responsive: true,
+        responsive: {
+          details: {
+            display: $.fn.dataTable.Responsive.display.childRow
+          }
+        },
         columnDefs: [
+          { responsivePriority: 1, targets: [3, 5] },
+          { responsivePriority: 10001, targets: [1, 2] },
           {
             "targets": 8,
             "visible": false,
