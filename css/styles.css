@@ -1256,20 +1256,27 @@ h3 {
   line-height: 14px;
   max-width: 400px;
   text-align: center; }
-
-.d3-tip:after {
-  top: 100%;
-  left: 50%;
-  border: solid transparent;
-  content: " ";
-  height: 0;
-  width: 0;
-  position: absolute;
-  pointer-events: none;
-  border-color: rgba(255, 255, 255, 0);
-  border-top-color: #ffffff;
-  border-width: 8px;
-  margin-left: -8px; }
+  .d3-tip:after {
+    top: 99%;
+    left: 50%;
+    border: solid transparent;
+    content: " ";
+    height: 0;
+    width: 0;
+    position: absolute;
+    pointer-events: none;
+    border-color: rgba(255, 255, 255, 0);
+    border-top-color: #FFF;
+    border-width: 8px;
+    margin-left: -8px; }
+  .d3-tip.s {
+    margin-top: 40px;
+    opacity: 1 !important; }
+    .d3-tip.s:after {
+      border-bottom-color: #FFF;
+      border-top-color: transparent;
+      margin-top: -8px;
+      top: -7px; }
 
 .dataTables_wrapper {
   margin-top: 20px; }
@@ -1316,7 +1323,7 @@ table.dataTable > tbody > tr.child span.dtr-title {
 
 @media only screen and (max-width: 767px) {
   main {
-    padding: 10px 0; }
+    padding: 20px 0 10px; }
   h1 {
     font-size: 20px;
     text-align: center; }

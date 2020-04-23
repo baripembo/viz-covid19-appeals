@@ -279,10 +279,13 @@ $( document ).ready(function() {
 
     d3.selectAll('.bar').call(tip);
     d3.selectAll('.bar-container').on('mousemove', function(d) {
+      var yPos = d3.select(this).attr('transform').split(', ')[1].split(')')[0];
+      var dir = (isMobile && yPos < 50) ? 's' : 'n';
       var target = d3.select('#tipfollowscursor')
         .attr('cx', d3.event.offsetX)
-        .attr('cy', d3.select(this).attr('transform').split(', ')[1].split(')')[0] - 10) 
+        .attr('cy', yPos - 10) 
         .node();
+      tip.direction(dir);
       tip.show(d, target);
     });
     d3.selectAll('.bar-container').on('mouseleave', tip.hide);
