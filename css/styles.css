@@ -1339,7 +1339,8 @@ table.dataTable > tbody > tr.child span.dtr-title {
     table.dataTable.responsive tbody td {
       width: 33%; }
   footer {
-    justify-content: center; }
+    justify-content: center;
+    height: 100%; }
     footer .logos {
       margin-left: 0; }
       footer .logos img {
