@@ -1270,8 +1270,7 @@ h3 {
     border-width: 8px;
     margin-left: -8px; }
   .d3-tip.s {
-    margin-top: 40px;
-    opacity: 1 !important; }
+    margin-top: 40px; }
     .d3-tip.s:after {
       border-bottom-color: #FFF;
       border-top-color: transparent;
