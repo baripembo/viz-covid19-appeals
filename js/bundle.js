@@ -349,6 +349,10 @@ $( document ).ready(function() {
             "searchable": false
           },
           { 
+            width: "10%", 
+            targets: [0, 1, 2, 3, 5, 6] 
+          },
+          { 
             width: "20%", 
             targets: [4, 7] 
           },
