@@ -274,8 +274,17 @@ $( document ).ready(function() {
         return d['Organisation'];
       });
 
+    // hidden element to help tooltip track mouse position
+    svg.append('circle').attr('id', 'tipfollowscursor');
+
     d3.selectAll('.bar').call(tip);
-    d3.selectAll('.bar-container').on('mouseover', tip.show);
+    d3.selectAll('.bar-container').on('mousemove', function(d) {
+      var target = d3.select('#tipfollowscursor')
+        .attr('cx', d3.event.offsetX)
+        .attr('cy', d3.select(this).attr('transform').split(', ')[1].split(')')[0] - 10) 
+        .node();
+      tip.show(d, target);
+    });
     d3.selectAll('.bar-container').on('mouseleave', tip.hide);
   }
 
@@ -358,7 +367,7 @@ $( document ).ready(function() {
           },
           { 
             targets: 4,
-            render: function ( data, type, row ) {
+            render: function (data, type, row) {
               var link = row[row.length-1];
               var d = (link !== '') ? '<a href="'+ link +'" target="_blank">' + data + '</a>' : data;
               return d;
