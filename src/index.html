@@ -7,6 +7,7 @@
     <link rel='icon' type='image/png' href='https://data.humdata.org/images/icons/hdx.ico' />
     <link href="https://fonts.googleapis.com/css?family=Source+Sans+Pro&display=swap" rel="stylesheet">
     <link href="https://cdn.datatables.net/1.10.20/css/jquery.dataTables.min.css" rel="stylesheet" type="text/css">
+    <link href="https://cdn.datatables.net/responsive/2.2.3/css/responsive.dataTables.min.css" rel="stylesheet" type="text/css">
     <link href='css/styles.css' rel='stylesheet' />
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
     <script src="https://d3js.org/d3.v5.js"></script>
@@ -15,6 +16,7 @@
     <script src="https://cdn.datatables.net/1.10.16/js/jquery.dataTables.min.js"></script>
     <script src="https://bartaz.github.io/sandbox.js/jquery.highlight.js"></script>
     <script src="https://cdn.datatables.net/plug-ins/1.10.20/features/searchHighlight/dataTables.searchHighlight.min.js"></script>
+    <script src="https://cdn.datatables.net/responsive/2.2.3/js/dataTables.responsive.min.js"></script>
   </head>
 
   <body>
@@ -29,18 +31,18 @@
         <h1>COVID-19 Appeals and Plans</h1>
       </header>
 
-      <div class="filter-container">
-        <label for="filterSelect">Order by:</label>
-        <select id="filterSelect" class="filter-select">
-          <option value="Duration (days)">Appeal Duration</option>
-          <option value="Original Requirement">Original Requirement $</option>
-          <option value="Overall Requirement">Revised Requirement $</option>
-          <option value="Organisation">Organisation A-Z</option>
+      <div class='filter-container'>
+        <label for='filterSelect'>Order by:</label>
+        <select id='filterSelect' class="filter-select">
+          <option value='Duration (days)'>Appeal Duration</option>
+          <option value='Original Requirement'>Original Requirement $</option>
+          <option value='Overall Requirement'>Revised Requirement $</option>
+          <option value='Organisation'>Organisation A-Z</option>
         </select>
       </div>
 
-      <div id="timeline"></div>
-      <table id="appealsTable">
+      <div id='timeline'></div>
+      <table id='appealsTable' class='display responsive'>
         <thead>
           <tr>
             <th>Start Date</th>

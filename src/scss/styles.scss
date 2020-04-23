@@ -41,6 +41,11 @@ footer {
 	padding: 20px 20px 15px;
 }
 
+a,
+a:visited {
+	color: #007CE1;
+}
+
 h1 {
 	font-family: 'Gotham-Bold';
 	font-size: 24px;
@@ -82,10 +87,6 @@ h3 {
 
 .bar-container {
 	cursor: pointer
-}
-
-.bar {
-	rx: 20px;
 }
 
 .tick {
@@ -177,20 +178,30 @@ h3 {
   line-height: 14px;
   max-width: 400px;
   text-align: center;
-}
-.d3-tip:after {
-	top: 100%;
-	left: 50%;
-	border: solid transparent;
-	content: " ";
-	height: 0;
-	width: 0;
-	position: absolute;
-	pointer-events: none;
-	border-color: rgba(255, 255, 255, 0);
-	border-top-color: #ffffff;
-	border-width: 8px;
-	margin-left: -8px;
+  &:after {
+		top: 99%;
+		left: 50%;
+		border: solid transparent;
+		content: " ";
+		height: 0;
+		width: 0;
+		position: absolute;
+		pointer-events: none;
+		border-color: rgba(255, 255, 255, 0);
+		border-top-color: #FFF;
+		border-width: 8px;
+		margin-left: -8px;
+	}
+  &.s {
+  	margin-top: 40px;
+  	opacity: 1 !important;
+  	&:after {
+  		border-bottom-color: #FFF;
+  		border-top-color: transparent;
+  		margin-top: -8px;
+  		top: -7px;
+  	}
+  }
 }
 
 //datatable
@@ -208,6 +219,7 @@ table.dataTable {
 		th {
 			font-family: 'Gotham-Bold';
 			font-size: 12px;
+			line-height: 14px;
 			padding: 10px 18px 10px 10px;
 			text-align: left;
 			text-transform: uppercase;
@@ -238,17 +250,70 @@ table.dataTable {
 	  background-color: #ffcc99;
 	  border-radius: 0.28571429rem;
 	}
+	.dtr-details {
+		list-style-type: none;
+		margin: 0;
+		padding: 0;
+		.dtr-title {
+			font-weight: 700;
+			min-width: 0;
+			&:after {
+				content: ': ';
+			}
+		}
+	}
+}
+table.dataTable>tbody>tr.child span.dtr-title {
+	min-width: 0;
 }
 
 
 @media only screen and (max-width: 767px) {
-	.logos {
-		.grid-container > div {
-			padding: 0;
-			text-align: center;
+	main {
+		padding: 20px 0 10px;
+	}
+	h1 {
+		font-size: 20px;
+		text-align: center;
+	}
+	#timeline {
+    overflow: scroll;
+		width: 100%;
+	}
+	.filter-container {
+		text-align: center;
+	}
+	.tick text {
+		font-size: 10px;
+	}
+	.d3-tip {
+		max-width: 250px;
+	}
+	.timeline-legend {
+		left: 10px;
+		right: auto;
+	}
+	.dataTables_wrapper {
+		margin: 20px 10px 0;
+	}
+	table.dataTable {
+		&.responsive {
+			width: 100% !important;
+			tbody {
+				td {
+					width: 33%;
+				}
+			}
 		}
-		img {
-			margin: 10px;
+	}
+	footer {
+		display: block;
+		text-align: center;
+		.logos {
+			margin-left: 0;
+			img {
+				margin: 10px;
+			}
 		}
 	}
 }

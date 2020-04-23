@@ -1,11 +1,11 @@
 $( document ).ready(function() {
   const DATA_URL = 'data/';
-  var isMobile = $(window).width()<600? true : false;
+  var isMobile = $(window).width()<768? true : false;
   var timelinePath = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vSQLlaJ4qXfuVIpcPI1kPxpbrOY4xsVrSPUGxmIj9G_dgUZJTSPZUMi-8i9rB6t_vfVOBVIjaM25T0S/pub?gid=0&single=true&output=csv';
   var timelineData = [];
 
-  var viewportWidth = $('main').innerWidth();
-  var categoryColors = {'Humanitarian Response': '#007CE1', 'Health Response': '#1EBFB3', 'Socio-economic Framework': '#F2645A'};
+  var viewportWidth = (isMobile) ? 1000 : $('main').innerWidth();
+  var categoryColors = {'Humanitarian Response': '#007CE1', 'Health Response': '#1EBFB3', 'Socio-economic Framework': '#9C27B0'};
   var timelineStartDate = new Date(2020, 0, 1);
   var timelineEndDate = new Date(2021, 3, 1);
   var today = new Date();
@@ -18,7 +18,7 @@ $( document ).ready(function() {
       //parse data
       //only display plans at global level for now
       data[0].forEach(function(d) {
-        if (d['Level'] == 'Global' && d['Organisation'] !== '') {
+        if (d['Level'] == 'Global' && d['Start Date'] !== '' && d['Original Requirement'] !== '') {
           //format start and end dates
           var start = moment(d['Start Date'], ['DD-MMM-YYYY','MM/DD/YYYY']);
           var end = moment(d['End Date'], ['DD-MMM-YYYY','MM/DD/YYYY']);
@@ -80,14 +80,14 @@ $( document ).ready(function() {
       .range([40, width - margin.left - margin.right]);
 
     // set the ranges
-    y = d3.scaleBand().range([height, 30]);
+    y = d3.scaleBand().range([height, 20]);
     y.domain(timelineData.map(function(d) { return d['Appeal Name']; }));
               
-    var svg = d3.select("#timeline").append("svg")
-        .attr("width", width)
-        .attr("height", height + margin.top + margin.bottom)
-      .append("g")
-        .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+    var svg = d3.select('#timeline').append('svg')
+        .attr('width', width)
+        .attr('height', height + margin.top + margin.bottom)
+      .append('g')
+        .attr('transform', 'translate(' + margin.left + ',' + margin.top + ')');
 
     var tip = d3.tip()
       .attr('class', 'd3-tip')
@@ -103,75 +103,77 @@ $( document ).ready(function() {
       });
 
     // add x gridlines
-    svg.append("g")     
-      .attr("class", "grid")
-      .attr("transform", "translate(0," + (height + margin.bottom - bottomOffset) + ")")
+    svg.append('g')     
+      .attr('class', 'grid')
+      .attr('transform', 'translate(0,' + (height + margin.bottom - bottomOffset) + ')')
       .call(d3.axisBottom(x)
         .tickSize(-(height + margin.bottom - bottomOffset))
-        .tickFormat("")
+        .tickFormat('')
       )
 
     // add the x axis
-    svg.append("g")
-      .attr("transform", "translate(0, 0)")
+    svg.append('g')
+      .attr('transform', 'translate(0, 0)')
       .call(d3.axisBottom(x)
         .tickFormat(function(d) {
-          var yearFormat = d3.timeFormat("%b %Y");
-          var monthFormat = d3.timeFormat("%b");
+          var yearFormat = d3.timeFormat('%b %Y');
+          var monthFormat = d3.timeFormat('%b');
           return (d.getMonth()==0) ? yearFormat(d) : monthFormat(d);
         })
       )
 
     // add line marker for today
-    var todayLine = svg.append("g")
-      .attr("transform", function(d, i) { return "translate(" + x(today) + ", 0)"; });
+    var todayLine = svg.append('g')
+      .attr('transform', function(d, i) { return 'translate(' + x(today) + ', 0)'; });
 
-    todayLine.append("line")
+    todayLine.append('line')
       .attr('class', 'today-line')
-      .attr("x1", 0)
-      .attr("y1", 0)
-      .attr("x2", 0)
-      .attr("y2", height + margin.bottom - bottomOffset);
+      .attr('x1', 0)
+      .attr('y1', 0)
+      .attr('x2', 0)
+      .attr('y2', height + margin.bottom - bottomOffset);
 
-    todayLine.append("svg:image")
-      .attr("class", "today-marker")
-      .attr("xlink:href", "assets/timeline_pointer@2x.png")
-      .attr("x", -7.5)
-      .attr("y", height + margin.bottom - bottomOffset)    
-      .attr("width", "15")
-      .attr("height", "26");
+    todayLine.append('svg:image')
+      .attr('class', 'today-marker')
+      .attr('xlink:href', 'assets/timeline_pointer@2x.png')
+      .attr('x', -7.5)
+      .attr('y', height + margin.bottom - bottomOffset)    
+      .attr('width', '15')
+      .attr('height', '26');
 
-    todayLine.append("text")
-      .attr("class", "today-label")
-      .attr("x", -18)
-      .attr("y", height + margin.bottom)
-      .text("Today");
+    todayLine.append('text')
+      .attr('class', 'today-label')
+      .attr('x', -18)
+      .attr('y', height + margin.bottom)
+      .text('Today');
 
     // append bars
     bars = svg.selectAll('.bar')
         .data(timelineData)
       .enter().append('g')
         .attr('class', 'bar-container')
-        .attr("transform", function(d, i) { return "translate(" + x(d['Start Date']) + ", " + y(d['Appeal Name']) + ")"; });
+        .attr('transform', function(d, i) { return 'translate(' + x(d['Start Date']) + ', ' + y(d['Appeal Name']) + ')'; });
 
-    bars.append("rect")
-      .attr("class", "bar")
-      .attr("fill", function(d) {
+    bars.append('rect')
+      .attr('class', 'bar')
+      .attr('fill', function(d) {
         return categoryColors[d['Appeal Type']];
       })
       .attr('opacity', function(d) {
         var o = (d['End Date'].getTime() < today.getTime()) ? 0.5 : 1;
         return o;
       })
-      .attr("height", barHeight)
-      .attr("width", function(d) {
+      .attr('rx', 20)
+      .attr('ry', 20)
+      .attr('height', barHeight)
+      .attr('width', function(d) {
         var w = x(d['End Date']) - x(d['Start Date']);
         return w;
       });
 
     //bar caps for appeals with no end date or end date past the timeline
     bars.append('rect')
-      .attr("fill", function(d) {
+      .attr('fill', function(d) {
         return categoryColors[d['Appeal Type']];
       })
       .attr("x", function(d) {
@@ -182,18 +184,18 @@ $( document ).ready(function() {
         var w = (d.capped) ? 20 : 0;
         return w;
       })
-      .attr("height", barHeight);
+      .attr('height', barHeight);
 
     // add org logo
-    bars.append("svg:image")
-      .attr("class", "org-logo")
-      .attr("x", 6)
-      .attr("y", 5)    
-      .attr("xlink:href", function(d) {
-        return "assets/logos/" + d['Organisation'].replace(' ', '') + ".png"
+    bars.append('svg:image')
+      .attr('class', 'org-logo')
+      .attr('x', 6)
+      .attr('y', 5)    
+      .attr('xlink:href', function(d) {
+        return 'assets/logos/' + d['Organisation'].replace(' ', '') + '.png'
       })
-      .attr("width", "29")
-      .attr("height", "29");
+      .attr('width', '29')
+      .attr('height', '29');
 
     //replace missing logo with generic logo
     $('.org-logo').on('error', function(){
@@ -201,16 +203,28 @@ $( document ).ready(function() {
     });
 
     // add org names
-    bars.append("text")
-      .attr("class", "org-label")
-      .attr("x", 40)
-      .attr("y", function(d) { return barHeight/2 + 4; })
+    bars.append('text')
+      .attr('class', 'org-label')
+      .attr('x', 40)
+      .attr('y', function(d) { return barHeight/2 + 4; })
       .text(function (d) {
         return d['Organisation'];
       });
 
+    // hidden element to help tooltip track mouse position
+    svg.append('circle').attr('id', 'tipfollowscursor');
+
     d3.selectAll('.bar').call(tip);
-    d3.selectAll('.bar-container').on('mouseover', tip.show);
+    d3.selectAll('.bar-container').on('mousemove', function(d) {
+      var yPos = d3.select(this).attr('transform').split(', ')[1].split(')')[0];
+      var dir = (isMobile && yPos < 50) ? 's' : 'n';
+      var target = d3.select('#tipfollowscursor')
+        .attr('cx', d3.event.offsetX)
+        .attr('cy', yPos - 10) 
+        .node();
+      tip.direction(dir);
+      tip.show(d, target);
+    });
     d3.selectAll('.bar-container').on('mouseleave', tip.hide);
   }
 
@@ -269,11 +283,23 @@ $( document ).ready(function() {
         data: dataArray,
         searchHighlight: true,
         stripeClasses: [ 'odd-row', 'even-row' ],
+        responsive: true,
+        responsive: {
+          details: {
+            display: $.fn.dataTable.Responsive.display.childRow
+          }
+        },
         columnDefs: [
+          { responsivePriority: 1, targets: [3, 5] },
+          { responsivePriority: 10001, targets: [1, 2] },
           {
             "targets": 8,
             "visible": false,
             "searchable": false
+          },
+          { 
+            width: "10%", 
+            targets: [0, 1, 2, 3, 5, 6] 
           },
           { 
             width: "20%", 
@@ -281,7 +307,7 @@ $( document ).ready(function() {
           },
           { 
             targets: 4,
-            render: function ( data, type, row ) {
+            render: function (data, type, row) {
               var link = row[row.length-1];
               var d = (link !== '') ? '<a href="'+ link +'" target="_blank">' + data + '</a>' : data;
               return d;
