@@ -277,22 +277,30 @@ $( document ).ready(function() {
         return d['Organisation'];
       });
 
-    // hidden element to help tooltip track mouse position
-    svg.append('circle').attr('id', 'tipfollowscursor');
 
+    // set up tooltip events
     d3.selectAll('.bar').call(tip);
-    d3.selectAll('.bar-container').on('mousemove', function(d) {
-      var yPos = d3.select(this).attr('transform').split(', ')[1].split(')')[0];
-      var dir = (isMobile && yPos < 50) ? 's' : 'n';
-      var target = d3.select('#tipfollowscursor')
-        .attr('cx', d3.event.offsetX)
-        .attr('cy', yPos - 10) 
-        .node();
-      tip.direction(dir);
-      tip.show(d, target);
-    });
     d3.selectAll('.bar-container').on('mouseleave', tip.hide);
+
+    if (isMobile) {
+      // hidden element to help tooltip track mouse position
+      svg.append('circle').attr('id', 'tipfollowscursor');
+      d3.selectAll('.bar-container').on('mousemove', function(d) {
+        var yPos = d3.select(this).attr('transform').split(', ')[1].split(')')[0];
+        var dir = (isMobile && yPos < 50) ? 's' : 'n';
+        var target = d3.select('#tipfollowscursor')
+          .attr('cx', d3.event.offsetX)
+          .attr('cy', yPos - 10) 
+          .node();
+        tip.direction(dir);
+        tip.show(d, target);
+      });
+    }
+    else {
+      d3.selectAll('.bar-container').on('mouseover', tip.show);
+    }
   }
+
 
   function createLegend() {
     var arr = []
