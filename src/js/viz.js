@@ -49,9 +49,25 @@ $( document ).ready(function() {
     createTable();
     $('.filter-select').change(onFilterSelect);
       
+    //create page link
+    var embed = { text: 'See data', link: 'https://data.humdata.org/dataset/covid-19-global-appeals-and-plans' };
+    var standalone = { text: 'Open fullscreen', link: 'https://data.humdata.org/visualization/covid19-appeals/' };
+    if (window.location !== window.parent.location) {
+      createLink(standalone);
+    }
+    else {
+      $('body').addClass('standalone');
+      createLink(embed);
+    }
+
     //remove loader and show vis
     $('.loader').hide();
     $('main, footer').css('opacity', 1);
+  }
+
+  function createLink(type) {
+    $('.link').find('a').attr('href', type.link);
+    $('.link').find('span').html(type.text);
   }
 
   function onFilterSelect() {
@@ -336,7 +352,7 @@ $( document ).ready(function() {
 
   function initTracking() {
     //initialize mixpanel
-    let MIXPANEL_TOKEN = '';
+    let MIXPANEL_TOKEN = window.location.hostname==='data.humdata.org'? '5cbf12bc9984628fb2c55a49daf32e74' : '99035923ee0a67880e6c05ab92b6cbc0';
     mixpanel.init(MIXPANEL_TOKEN);
     mixpanel.track('page view', {
       'page title': document.title,
@@ -345,5 +361,5 @@ $( document ).ready(function() {
   }
 
   getData();
-  //initTracking();
+  initTracking();
 });
