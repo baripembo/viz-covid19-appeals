@@ -22,7 +22,9 @@ $( document ).ready(function() {
           //format start and end dates
           var start = moment(d['Start Date'], ['DD-MMM-YYYY','MM/DD/YYYY']);
           var end = moment(d['End Date'], ['DD-MMM-YYYY','MM/DD/YYYY']);
-
+          var revision = moment(d['Revision Date'], ['DD-MMM-YYYY','MM/DD/YYYY']);
+          d['Revision Date'] = new Date(revision.year(), revision.month(), revision.date());
+          
           //if start date is invalid, set it to today
           d['Start Date'] = (start.isValid()) ? new Date(start.year(), start.month(), start.date()) : today;
 

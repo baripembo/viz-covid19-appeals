@@ -28,7 +28,7 @@ function getEndDate(startDate, duration) {
     return endDate;
 }
 
-function getNum(num) {
-    var n = (isNaN(num)) ? 0 : num;
-    return d3.format('$.2s')(n).replace(/G/, 'B');
+function getNum(val) {
+    var n = (isNaN(val)) ? val : d3.format('$.3s')(val).replace(/G/, 'B');
+    return n;
 }
