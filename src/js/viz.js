@@ -23,8 +23,8 @@ $( document ).ready(function() {
           var start = moment(d['Start Date'], ['DD-MMM-YYYY','MM/DD/YYYY']);
           var end = moment(d['End Date'], ['DD-MMM-YYYY','MM/DD/YYYY']);
           var revision = moment(d['Revision Date'], ['DD-MMM-YYYY','MM/DD/YYYY']);
-          d['Revision Date'] = new Date(revision.year(), revision.month(), revision.date());
-          
+          d['Revision Date'] = (revision.isValid()) ? new Date(revision.year(), revision.month(), revision.date()) : '';
+
           //if start date is invalid, set it to today
           d['Start Date'] = (start.isValid()) ? new Date(start.year(), start.month(), start.date()) : today;
 
@@ -110,12 +110,12 @@ $( document ).ready(function() {
     var tip = d3.tip()
       .attr('class', 'd3-tip')
       .offset([0, 0])
-      .html(function(d) { 
+      .html(function(d) {
         var content ='<h3>'+ d['Appeal Name'] +'</h3>';
         content += 'Duration: '+ d['Duration (days)'] +' Days <hr>';
         content += '<div class="req-container"><div class="req">Original Requirement: <span class="num">'+ getNum(d['Original Requirement']) +'</span>('+ dateFormat(d['Start Date']) +')</div>';
         if (d['Revised Requirement']!=='') content += '<div class="req">Revised Requirement: <span class="num">'+ getNum(d['Revised Requirement']) +'</span>';
-        content += (d['Revision Date']!=='') ? '('+ dateFormat(d['Revision Date']) +')</div>' : '</div>'; 
+        content += (d['Revision Date']!='') ? '('+ dateFormat(d['Revision Date']) +')</div>' : '</div>'; 
         content += '</div>';
         return content; 
       });
