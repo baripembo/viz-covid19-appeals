@@ -111,8 +111,9 @@ $( document ).ready(function() {
       .attr('class', 'd3-tip')
       .offset([0, 0])
       .html(function(d) {
+        var dur = (d['Duration (days)'] < 0) ? 0 : d['Duration (days)'];
         var content ='<h3>'+ d['Appeal Name'] +'</h3>';
-        content += 'Duration: '+ d['Duration (days)'] +' Days <hr>';
+        content += 'Duration: '+ dur +' Days <hr>';
         content += '<div class="req-container"><div class="req">Original Requirement: <span class="num">'+ getNum(d['Original Requirement']) +'</span>('+ dateFormat(d['Start Date']) +')</div>';
         if (d['Revised Requirement']!=='') content += '<div class="req">Revised Requirement: <span class="num">'+ getNum(d['Revised Requirement']) +'</span>';
         content += (d['Revision Date']!='') ? '('+ dateFormat(d['Revision Date']) +')</div>' : '</div>'; 
@@ -189,6 +190,7 @@ $( document ).ready(function() {
       .attr('height', barHeight)
       .attr('width', function(d) {
         var w = x(d['End Date']) - x(d['Start Date']);
+        if (w<0) w = 0;
         return w;
       });
 
