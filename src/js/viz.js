@@ -17,12 +17,13 @@ $( document ).ready(function() {
     ]).then(function(data){
       //parse data
       //only display plans at global level for now
-      data[0].forEach(function(d) {
+      data[0].forEach(function(d, index) {
         if (d['Level'] == 'Global' && d['Start Date'] !== '' && d['Original Requirement'] !== '') {
           //format start and end dates
           var start = moment(d['Start Date'], ['DD-MMM-YYYY','MM/DD/YYYY']);
           var end = moment(d['End Date'], ['DD-MMM-YYYY','MM/DD/YYYY']);
           var revision = moment(d['Revision Date'], ['DD-MMM-YYYY','MM/DD/YYYY']);
+          d.id = index;
           d['Revision Date'] = (revision.isValid()) ? new Date(revision.year(), revision.month(), revision.date()) : '';
 
           //if start date is invalid, set it to today
@@ -40,7 +41,6 @@ $( document ).ready(function() {
           timelineData.push(d);
         }
       });
-
       timelineData.sort(propComparator('Duration (days)'));
       init();
     });
@@ -92,14 +92,14 @@ $( document ).ready(function() {
     var margin = {top: 30, right: 30, bottom: 80, left: 0},
         width = viewportWidth - margin.left - margin.right,
         height = (barHeight + barPadding) * timelineData.length;
-    
+
     x = d3.scaleTime()
       .domain([timelineStartDate, timelineEndDate])
       .range([40, width - margin.left - margin.right]);
 
     // set the ranges
     y = d3.scaleBand().range([height, 20]);
-    y.domain(timelineData.map(function(d) { return d['Appeal Name']; }));
+    y.domain(timelineData.map(function(d) { return d.id; }));
               
     var svg = d3.select('#timeline').append('svg')
         .attr('width', width)
@@ -174,7 +174,7 @@ $( document ).ready(function() {
         .data(timelineData)
       .enter().append('g')
         .attr('class', 'bar-container')
-        .attr('transform', function(d, i) { return 'translate(' + x(d['Start Date']) + ', ' + y(d['Appeal Name']) + ')'; });
+        .attr('transform', function(d, i) { return 'translate(' + x(d['Start Date']) + ', ' + y(d.id) + ')'; });
 
     bars.append('rect')
       .attr('class', 'bar')
