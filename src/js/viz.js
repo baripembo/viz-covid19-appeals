@@ -1,7 +1,8 @@
 $( document ).ready(function() {
   const DATA_URL = 'data/';
   var isMobile = $(window).width()<768? true : false;
-  var timelinePath = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vSQLlaJ4qXfuVIpcPI1kPxpbrOY4xsVrSPUGxmIj9G_dgUZJTSPZUMi-8i9rB6t_vfVOBVIjaM25T0S/pub?gid=0&single=true&output=csv';
+  //var timelinePath = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vSQLlaJ4qXfuVIpcPI1kPxpbrOY4xsVrSPUGxmIj9G_dgUZJTSPZUMi-8i9rB6t_vfVOBVIjaM25T0S/pub?gid=0&single=true&output=csv';
+  var timelinePath = 'https://proxy.hxlstandard.org/api/data-preview.csv?url=https%3A%2F%2Fdocs.google.com%2Fspreadsheets%2Fd%2Fe%2F2PACX-1vSQLlaJ4qXfuVIpcPI1kPxpbrOY4xsVrSPUGxmIj9G_dgUZJTSPZUMi-8i9rB6t_vfVOBVIjaM25T0S%2Fpub%3Fgid%3D0%26single%3Dtrue%26output%3Dcsv'
   var timelineData = [];
 
   var viewportWidth = (isMobile) ? 1000 : $('main').innerWidth();
@@ -17,11 +18,14 @@ $( document ).ready(function() {
     ]).then(function(data){
       //parse data
       //only display plans at global level for now
-      data[0].forEach(function(d) {
+      data[0].forEach(function(d, index) {
         if (d['Level'] == 'Global' && d['Start Date'] !== '' && d['Original Requirement'] !== '') {
           //format start and end dates
           var start = moment(d['Start Date'], ['DD-MMM-YYYY','MM/DD/YYYY']);
           var end = moment(d['End Date'], ['DD-MMM-YYYY','MM/DD/YYYY']);
+          var revision = moment(d['Revision Date'], ['DD-MMM-YYYY','MM/DD/YYYY']);
+          d.id = index;
+          d['Revision Date'] = (revision.isValid()) ? new Date(revision.year(), revision.month(), revision.date()) : '';
 
           //if start date is invalid, set it to today
           d['Start Date'] = (start.isValid()) ? new Date(start.year(), start.month(), start.date()) : today;
@@ -38,7 +42,6 @@ $( document ).ready(function() {
           timelineData.push(d);
         }
       });
-
       timelineData.sort(propComparator('Duration (days)'));
       init();
     });
@@ -49,9 +52,25 @@ $( document ).ready(function() {
     createTable();
     $('.filter-select').change(onFilterSelect);
       
+    //create page link
+    var embed = { text: 'See data', link: 'https://data.humdata.org/dataset/covid-19-global-appeals-and-plans' };
+    var standalone = { text: 'Open fullscreen', link: 'https://data.humdata.org/visualization/covid19-appeals/' };
+    if (window.location !== window.parent.location) {
+      createLink(standalone);
+    }
+    else {
+      $('body').addClass('standalone');
+      createLink(embed);
+    }
+
     //remove loader and show vis
     $('.loader').hide();
     $('main, footer').css('opacity', 1);
+  }
+
+  function createLink(type) {
+    $('.link').find('a').attr('href', type.link);
+    $('.link').find('span').html(type.text);
   }
 
   function onFilterSelect() {
@@ -74,14 +93,14 @@ $( document ).ready(function() {
     var margin = {top: 30, right: 30, bottom: 80, left: 0},
         width = viewportWidth - margin.left - margin.right,
         height = (barHeight + barPadding) * timelineData.length;
-    
+
     x = d3.scaleTime()
       .domain([timelineStartDate, timelineEndDate])
       .range([40, width - margin.left - margin.right]);
 
     // set the ranges
     y = d3.scaleBand().range([height, 20]);
-    y.domain(timelineData.map(function(d) { return d['Appeal Name']; }));
+    y.domain(timelineData.map(function(d) { return d.id; }));
               
     var svg = d3.select('#timeline').append('svg')
         .attr('width', width)
@@ -92,12 +111,13 @@ $( document ).ready(function() {
     var tip = d3.tip()
       .attr('class', 'd3-tip')
       .offset([0, 0])
-      .html(function(d) { 
+      .html(function(d) {
+        var dur = (d['Duration (days)'] < 0) ? 0 : d['Duration (days)'];
         var content ='<h3>'+ d['Appeal Name'] +'</h3>';
-        content += 'Duration: '+ d['Duration (days)'] +' Days <hr>';
+        content += 'Duration: '+ dur +' Days <hr>';
         content += '<div class="req-container"><div class="req">Original Requirement: <span class="num">'+ getNum(d['Original Requirement']) +'</span>('+ dateFormat(d['Start Date']) +')</div>';
         if (d['Revised Requirement']!=='') content += '<div class="req">Revised Requirement: <span class="num">'+ getNum(d['Revised Requirement']) +'</span>';
-        content += (d['Revision Date']!=='') ? '('+ dateFormat(d['Revision Date']) +')</div>' : '</div>'; 
+        content += (d['Revision Date']!='') ? '('+ dateFormat(d['Revision Date']) +')</div>' : '</div>'; 
         content += '</div>';
         return content; 
       });
@@ -155,7 +175,7 @@ $( document ).ready(function() {
         .data(timelineData)
       .enter().append('g')
         .attr('class', 'bar-container')
-        .attr('transform', function(d, i) { return 'translate(' + x(d['Start Date']) + ', ' + y(d['Appeal Name']) + ')'; });
+        .attr('transform', function(d, i) { return 'translate(' + x(d['Start Date']) + ', ' + y(d.id) + ')'; });
 
     bars.append('rect')
       .attr('class', 'bar')
@@ -171,6 +191,7 @@ $( document ).ready(function() {
       .attr('height', barHeight)
       .attr('width', function(d) {
         var w = x(d['End Date']) - x(d['Start Date']);
+        if (w<0) w = 0;
         return w;
       });
 
@@ -336,7 +357,7 @@ $( document ).ready(function() {
 
   function initTracking() {
     //initialize mixpanel
-    let MIXPANEL_TOKEN = '';
+    let MIXPANEL_TOKEN = window.location.hostname==='data.humdata.org'? '5cbf12bc9984628fb2c55a49daf32e74' : '99035923ee0a67880e6c05ab92b6cbc0';
     mixpanel.init(MIXPANEL_TOKEN);
     mixpanel.track('page view', {
       'page title': document.title,
@@ -345,5 +366,5 @@ $( document ).ready(function() {
   }
 
   getData();
-  //initTracking();
+  initTracking();
 });

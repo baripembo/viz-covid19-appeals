@@ -49,6 +49,7 @@ a:visited {
 h1 {
 	font-family: 'Gotham-Bold';
 	font-size: 24px;
+	margin-bottom: 10px;
 }
 
 h3 {
@@ -56,6 +57,13 @@ h3 {
 	font-size: 14px;
 	line-height: 18px;
 	margin: 0 0 5px;
+}
+
+.link {
+	display: inline-block;
+	a {
+		text-decoration: none;
+	}
 }
 
 .logos {
@@ -273,6 +281,10 @@ table.dataTable>tbody>tr.child span.dtr-title {
 	}
 	h1 {
 		font-size: 20px;
+		text-align: center;
+	}
+	.link {
+		display: block;
 		text-align: center;
 	}
 	#timeline {
